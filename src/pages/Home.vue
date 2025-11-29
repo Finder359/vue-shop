@@ -1,140 +1,176 @@
 <template>
-  <div class="home-page" style="background-color:#f2f9fd;">
-    <div class="header bg-main">
-      <div class="logo margin-big-left fadein-top">
-        <h1>
-          <img
-            src="/images/y.jpg"
-            class="radius-circle rotate-hover"
-            height="50"
-            alt=""
-          />
-          后台管理中心
-        </h1>
-      </div>
-      <div class="head-l">
-        <a class="button button-little bg-green" href="#" target="_blank">
-          <span class="icon-home"></span> 前台首页
-        </a>
-        &nbsp;&nbsp;
-        <a href="##" class="button button-little bg-blue">
-          <span class="icon-wrench"></span> 清除缓存
-        </a>
-        &nbsp;&nbsp;
-        <a class="button button-little bg-red" href="/login">
-          <!-- 以后可以跳转到 Vue 的登录路由 -->
-          <span class="icon-power-off"></span> 退出登录
-        </a>
-      </div>
-    </div>
-
-    <div class="leftnav">
-      <div class="leftnav-title">
-        <strong><span class="icon-list"></span>菜单列表</strong>
+  <el-container style="height: 100vh;">
+    <!-- 顶部 -->
+    <el-header class="header-bar">
+      <div class="logo-area">
+        <img src="/images/y.jpg" alt="" class="logo" />
+        <span class="title">后台管理中心</span>
       </div>
 
-      <h2><span class="icon-pencil-square-o"></span>用户管理</h2>
-      <ul>
-        <li>
-          <a  @click="$router.push('/users')" target="right"><span class="icon-caret-right"></span>用户管理</a>
-        </li>
-        <li>
-          <a href="#" target="right"><span class="icon-caret-right"></span>添加用户</a>
-        </li>
-        <li>
-          <a href="#" target="right"><span class="icon-caret-right"></span>修改密码</a>
-        </li>
-      </ul>
+      <div class="header-buttons">
+        <el-button type="success"  @click="goFront">
+          前台首页
+        </el-button>
 
-      <h2><span class="icon-pencil-square-o"></span>商品管理</h2>
-      <ul>
-        <li>
-          <a href="#" target="right"><span class="icon-caret-right"></span>商品管理</a>
-        </li>
-        <li>
-          <a href="#" target="right"><span class="icon-caret-right"></span>添加商品</a>
-        </li>
-      </ul>
+        <el-button type="primary"  @click="clearCache">
+          清除缓存
+        </el-button>
 
-      <h2><span class="icon-pencil-square-o"></span>订单管理</h2>
-      <ul>
-        <li>
-          <a href="#" target="right"><span class="icon-caret-right"></span>订单管理</a>
-        </li>
-        <li>
-          <a href="#" target="right"><span class="icon-caret-right"></span>添加订单</a>
-        </li>
-      </ul>
+        <el-button type="danger"  @click="logout">
+          退出登录
+        </el-button>
+      </div>
+    </el-header>
 
-      <h2><span class="icon-pencil-square-o"></span>会员管理</h2>
-      <ul>
-        <li>
-          <a href="#" target="right"><span class="icon-caret-right"></span>会员管理</a>
-        </li>
-        <li>
-          <a href="#" target="right"><span class="icon-caret-right"></span>添加会员</a>
-        </li>
-      </ul>
-    </div>
+    <el-container>
+      <!-- 左侧菜单 -->
+      <el-aside width="220px" class="aside-menu">
+        <el-menu
+          background-color="#304156"
+          text-color="#bfcbd9"
+          active-text-color="#409EFF"
+          :default-active="activeMenu"
+          :unique-opened="true"
+          router
+          @select="onMenuSelect"
+        >
 
-    <ul class="bread">
-      <li>
-        <a href="#" target="right" class="icon-home"> 首页</a>
-      </li>
-      <li><a href="##" id="a_leader_txt">网站信息</a></li>
-      <li>
-        <b>当前语言：</b>
-        <span style="color:red;">中文</span>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;切换语言：
-        <a href="##">中文</a>
-        &nbsp;&nbsp;<a href="##">英文</a>
-      </li>
-    </ul>
+          <!-- 用户管理 -->
+          <el-sub-menu index="1" >
+            <template #title>
+              <span>用户管理</span>
+            </template>
 
-    <div class="admin">
-      <!-- 这里原来是 iframe，可以先保留，后面用 Vue 路由替代 -->
-      <iframe
-        scrolling="auto"
-        frameborder="0"
-        src="/info.html"
-        name="right"
-        width="100%"
-        height="100%"
-      ></iframe>
-    </div>
+            <el-menu-item index="/users">用户管理</el-menu-item>
+            <el-menu-item index="/add-user">添加用户</el-menu-item>
+            <el-menu-item index="/edit-user">编辑用户</el-menu-item>
+          </el-sub-menu>
 
-    <div style="text-align:center;">
-      <p>
-        来源:
-        <a href="http://www.mycodes.net/" target="_blank">源码之家</a>
-      </p>
-    </div>
-  </div>
+          <!-- 商品管理 -->
+          <el-sub-menu index="2">
+            <template #title>
+              <span>商品管理</span>
+            </template>
+
+            <el-menu-item index="/goods">商品管理</el-menu-item>
+            <el-menu-item index="/goods/add">添加商品</el-menu-item>
+          </el-sub-menu>
+
+          <!-- 订单管理 -->
+          <el-sub-menu index="3">
+            <template #title>
+              <span>订单管理</span>
+            </template>
+
+            <el-menu-item index="/order">订单管理</el-menu-item>
+            <el-menu-item index="/order/add">添加订单</el-menu-item>
+          </el-sub-menu>
+
+          <!-- 会员管理 -->
+          <el-sub-menu index="4">
+            <template #title>
+              <span>会员管理</span>
+            </template>
+
+            <el-menu-item index="/member">会员管理</el-menu-item>
+            <el-menu-item index="/member/add">添加会员</el-menu-item>
+          </el-sub-menu>
+        </el-menu>
+      </el-aside>
+
+      <!-- 右侧内容 -->
+      <el-main class="main-content">
+        <router-view :key="routerKey"/>
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <script>
 export default {
   name: "HomePage",
-  mounted() {
-    // 使用全局引入的 jQuery（在 index.html 里）
-    if (window.$) {
-      window.$(function () {
-        window.$(".leftnav h2").click(function () {
-          window.$(this).next().slideToggle(200);
-          window.$(this).toggleClass("on");
-        });
-        window.$(".leftnav ul li a").click(function () {
-          window.$("#a_leader_txt").text(window.$(this).text());
-          window.$(".leftnav ul li a").removeClass("on");
-          window.$(this).addClass("on");
-        });
-      });
+
+  data() {
+    return {
+      routerKey: 0,
+      activeMenu: this.$route.path
+    };
+  },
+
+  watch: {
+    $route(to) {
+      this.activeMenu = to.path;
     }
   },
+
+  methods: {
+    onMenuSelect(index) {
+      if (this.$route.path === index) {
+        // 同路由 → 刷新
+        this.routerKey++;
+      } else {
+        // 让 Element Plus 自动路由跳转
+        this.$router.push(index);
+      }
+    },
+    goFront() {
+      alert("跳转前台首页（以后可改）");
+    },
+
+    clearCache() {
+      this.$message.success("缓存清除成功！");
+    },
+
+    logout() {
+      // 清除 token
+      localStorage.removeItem("token");
+
+      // 跳转到登录页
+      this.$router.push("/login");
+
+      // 可选：提示一下
+      this.$message.success("您已退出登录");
+    }
+  }
 };
 </script>
 
 <style scoped>
-/* 这里先不用写样式，直接用全局 pintuer.css + admin.css。
-   如果以后想单独改某些样式，可以在这里加。 */
+.header-bar {
+  background-color: #409eff;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 42px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.aside-menu {
+  background-color: #304156;
+}
+
+.main-content {
+  background-color: #f2f3f5;
+  padding: 20px;
+}
 </style>
