@@ -63,11 +63,7 @@ export default {//相当于public class xxx extends Vue
   methods: {//所有的功能函数都写在这里
     // 加载用户列表
     loadUsers() {
-      axios.get("http://localhost:8080/user/list", {
-        headers: {
-          Authorization: localStorage.getItem("token")
-        }
-      })
+      axios.get("http://localhost:8080/user/list")      
       .then(res => {
         this.users = res.data;
       })

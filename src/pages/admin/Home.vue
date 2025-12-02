@@ -41,9 +41,9 @@
               <span>用户管理</span>
             </template>
 
-            <el-menu-item index="/users">用户管理</el-menu-item>
-            <el-menu-item index="/add-user">添加用户</el-menu-item>
-            <el-menu-item index="/edit-user">编辑用户</el-menu-item>
+            <el-menu-item index="/admin/users">用户管理</el-menu-item>
+            <el-menu-item index="/admin/add-user">添加用户</el-menu-item>
+            <el-menu-item index="/admin/edit-user">编辑用户</el-menu-item>
           </el-sub-menu>
 
           <!-- 商品管理 -->

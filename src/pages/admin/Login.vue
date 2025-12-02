@@ -11,11 +11,7 @@
         class="login-form"
       >
         <el-form-item prop="username">
-          <el-input
-            v-model="form.username"
-            placeholder="登录账号"
-            clearable
-          >
+          <el-input v-model="form.username" placeholder="登录账号" clearable>
             <template #prefix>
               <el-icon><User /></el-icon>
             </template>
@@ -35,13 +31,10 @@
           </el-input>
         </el-form-item>
 
-        <el-button
-          type="primary"
-          class="login-btn"
-          @click="submitLogin"
-        >
+        <el-button type="primary" class="login-btn" @click="submitLogin">
           登录
         </el-button>
+        <el-checkbox v-model="rememberMe">七天内自动登录</el-checkbox>
       </el-form>
     </el-card>
   </div>
@@ -60,12 +53,13 @@ export default {
     return {
       form: {
         username: "",
-        password: ""
+        password: "",
+        rememberMe: false,
       },
       rules: {
         username: [{ required: true, message: "请输入账号", trigger: "blur" }],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }]
-      }
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+      },
     };
   },
 
@@ -78,20 +72,25 @@ export default {
           .post("http://localhost:8080/user/login", this.form)
           .then((res) => {
             if (res.data.code === 200) {
+              const token = res.data.token;
               // 保存 token（后续请求要带上）
-              localStorage.setItem("token", res.data.token);
+              if (this.rememberMe) {
+                localStorage.setItem("token", token); // 保存 7 天
+              } else {
+                sessionStorage.setItem("token", token); // 浏览器关了就没了
+              }
 
               this.$message.success("登录成功");
 
               // 跳转后台首页
-              this.$router.push("/");
+              this.$router.push("/admin");
             } else {
               this.$message.error(res.data.msg);
             }
           });
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
