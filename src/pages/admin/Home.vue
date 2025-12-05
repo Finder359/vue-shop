@@ -124,6 +124,7 @@ export default {
     logout() {
       // 清除 token
       localStorage.removeItem("token");
+       sessionStorage.removeItem("token");
 
       // 跳转到登录页
       this.$router.push("/login");

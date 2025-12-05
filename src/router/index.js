@@ -52,34 +52,37 @@ const router = createRouter({
 });
 
 // ----------------------------
-// 全局前置守卫：拦截未登录访问
+// 全局前置守卫
 // ----------------------------
-
-const adminPaths = ['/admin/', '/admin/users', '/admin/add-user', '/admin/edit-user'];
-
-// 全局守卫
 router.beforeEach((to, from, next) => {
-  // 登录页面不需要 token
+  // 获取 token（兼容自动登录 + 临时登录）
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+
+  // 1️⃣ 登录页逻辑：已登录 → 禁止再去 /login
   if (to.path === "/login") {
-    return next();
+    if (token) {
+      ElMessage.success("您已登录，已自动跳转后台");
+      return next("/admin");
+    }
+    return next(); // 未登录的话进入登录页
   }
 
-  // 判断是否后台路径
-  const needLogin = adminPaths.some((p) => to.path.startsWith(p));
+  // 2️⃣ 后台路径判断：所有 /admin 开头的页面都需要登录
+  const isAdmin = to.path.startsWith("/admin");
 
-  if (!needLogin) {
-    return next();  // 前台页面放行
+  if (isAdmin) {
+    if (!token) {
+      ElMessage.error("未登录，请先登录！");
+      return next("/login");
+    }
+    return next(); // 已登录正常进入后台
   }
 
-  // 后台路径 → 检查 token
-  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-  if (!token) {
-    ElMessage.error("未登录，请先登录！");
-    return next("/login");
-  }
-
+  // 3️⃣ 其他前台路径放行
   next();
 });
+
 
 
 

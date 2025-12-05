@@ -161,6 +161,7 @@ export default {
   name: "TeslaPage",
 
   mounted() {
+    document.title = "纯电动车，太阳能和清洁能源|特斯拉中国";
     AOS.init();
 
     // 引用 menu 按钮
@@ -178,7 +179,9 @@ export default {
       document.body.style.backgroundColor = "#fff";
     });
   },
+  
 };
+
 </script>
 
 <style src="./index.css"></style>
